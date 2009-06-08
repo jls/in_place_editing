@@ -10,5 +10,8 @@ Example:
 
   # View
   <%= in_place_editor_field :post, 'title' %>
+  
+  # Conditional editor field
+  <%= in_place_editor_field_if post.editable_by?(current_user), :post, 'title' %>
 
 Copyright (c) 2007 David Heinemeier Hansson, released under the MIT license  
