@@ -1,5 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + "/test_helper")
 
+class InPlaceEditingTestModel
+  def id; 1; end
+  def name; "Model Name"; end
+end
+
 class InPlaceEditingTest < Test::Unit::TestCase
   include InPlaceEditing
   include InPlaceMacrosHelper
@@ -10,6 +15,7 @@ class InPlaceEditingTest < Test::Unit::TestCase
   include ActionView::Helpers::FormHelper
   include ActionView::Helpers::CaptureHelper
   
+  
   def setup
     @controller = Class.new do
       def url_for(options)
@@ -18,6 +24,7 @@ class InPlaceEditingTest < Test::Unit::TestCase
         url
       end
     end
+    @model = InPlaceEditingTestModel.new
     @controller = @controller.new
     @protect_against_forgery = false
   end
@@ -86,4 +93,15 @@ class InPlaceEditingTest < Test::Unit::TestCase
       :url => { :action => "action_to_set_value" },
       :text_between_controls => "or" )
   end
+  
+  def test_in_place_editor_if_with_false_conditions
+    assert_match "Model Name",
+    in_place_editor_field_if(false, :model, "name")
+  end
+  
+  def test_in_place_editor_if_with_true_conditions
+    assert_equal "<span\ class=\"in_place_editor_field\" id=\"model_name_1_in_place_editor\">Model Name</span><script type=\"text/javascript\">\n//<![CDATA[\nnew Ajax.InPlaceEditor(\'model_name_1_in_place_editor\', \'http://www.example.com/set_model_name\')\n//]]>\n</script>",
+    in_place_editor_field_if(true, :model, "name")
+  end
+  
 end

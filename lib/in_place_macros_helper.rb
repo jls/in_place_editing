@@ -77,4 +77,16 @@ module InPlaceMacrosHelper
     tag = content_tag(tag_options.delete(:tag), h(instance_tag.value(instance_tag.object)),tag_options)
     return tag + in_place_editor(tag_options[:id], in_place_editor_options)
   end
+  
+  # Renders an in_place_editor_field if the condition is true.  Otherwise renders
+  # object.send(method).
+  def in_place_editor_field_if(condition, object, method, tag_options = {}, in_place_editor_options = {})
+    if condition
+      in_place_editor_field(object, method, tag_options, in_place_editor_options)
+    else
+      instance_tag = ::ActionView::Helpers::InstanceTag.new(object, method, self)
+      instance_tag.object.send(method)
+    end
+  end
+  
 end
